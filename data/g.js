@@ -1,0 +1,30 @@
+var g = {
+"type": "FeatureCollection",
+"name": "g2",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Nume": "Parc Piața Unirii" }, "geometry": { "type": "Point", "coordinates": [ 26.103924346350642, 44.428150908427916, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Piața Universității" }, "geometry": { "type": "Point", "coordinates": [ 26.102554992363743, 44.435379903983645, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Piața Revoluției" }, "geometry": { "type": "Point", "coordinates": [ 26.098306458840192, 44.440719172327007, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Parc Izvor" }, "geometry": { "type": "Point", "coordinates": [ 26.08934295225729, 44.432390827738686, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Autogara Filaret" }, "geometry": { "type": "Point", "coordinates": [ 26.09387299220738, 44.416554599977466, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Sala Polivalentă" }, "geometry": { "type": "Point", "coordinates": [ 26.111703961866109, 44.405666622659837, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Parc Răzoare" }, "geometry": { "type": "Point", "coordinates": [ 26.064393293826136, 44.428926230715156, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Piața Alba Iulia" }, "geometry": { "type": "Point", "coordinates": [ 26.1305719975594, 44.425893875579888, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Parcul Obor" }, "geometry": { "type": "Point", "coordinates": [ 26.128146821586675, 44.448961787210663, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Parcul Circului" }, "geometry": { "type": "Point", "coordinates": [ 26.112413429671967, 44.456870960889894, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Piața Victoriei" }, "geometry": { "type": "Point", "coordinates": [ 26.087438318349932, 44.452991065448742, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Gara de Nord" }, "geometry": { "type": "Point", "coordinates": [ 26.077661081629607, 44.445533054523061, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Stadion Giulești" }, "geometry": { "type": "Point", "coordinates": [ 26.058372551379843, 44.456289106279321, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Parc Politehnica" }, "geometry": { "type": "Point", "coordinates": [ 26.051837828746951, 44.437298912143888, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Intersecție Calea Giulești - Strada Pătrarului" }, "geometry": { "type": "Point", "coordinates": [ 26.025735403339045, 44.470378296128544, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Intersecție Șoseaua Andronache - Strada Oituz" }, "geometry": { "type": "Point", "coordinates": [ 26.149517658169987, 44.472817363602488, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Magazinul Prosper" }, "geometry": { "type": "Point", "coordinates": [ 26.134468986561298, 44.415820517595499, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Grădina Icoanei" }, "geometry": { "type": "Point", "coordinates": [ 26.105348196702344, 44.44350013929423, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Colegiul Național Bilingv „George Coșbuc”" }, "geometry": { "type": "Point", "coordinates": [ 26.119848268799537, 44.440287328240927, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Parcul Motodrom (Fundeni)" }, "geometry": { "type": "Point", "coordinates": [ 26.148848417450822, 44.468196606095482, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Zona Pieței Delfinului" }, "geometry": { "type": "Point", "coordinates": [ 26.160086190464263, 44.445147967075769, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Universitatea Tehnică de Construcții" }, "geometry": { "type": "Point", "coordinates": [ 26.125695907164726, 44.463227484363586, 0.0 ] } },
+{ "type": "Feature", "properties": { "Nume": "Complexul Național Sportiv „Lia Manoliu”" }, "geometry": { "type": "Point", "coordinates": [ 26.153251423326882, 44.434646374516888, 0.0 ] } }
+]
+};

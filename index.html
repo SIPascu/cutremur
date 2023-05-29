@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+      <meta charset="UTF-8" />
+      <title>Demo cutremur</title>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css" integrity=
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+      <link rel="stylesheet" href="leaflet-sidepanel.css" />
+      <link rel="stylesheet" href="L.Control.Locate.min.css">
+      <link rel="stylesheet" href="leaflet-control-geocoder.Geocoder.css">
+      <link rel="stylesheet" href="leaflet-panel-layers.css"/>
+      <link rel="stylesheet" href="leaflet-routing-machine.css" />
+      <style>
+         html,
+         body {
+         padding: 0;
+         margin: 0;
+         height: 100%;
+         }
+         .mapFullScreen {
+         position: absolute;
+         width: 100%;
+         height: 100%;
+         }
+         .reachability-control-settings-button {
+         font-size: 22px;
+         }
+         .header h1 {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         }
+         .header a {
+         font-size: 16px;
+         color: #199900;
+         text-decoration: none;
+         margin-left: 24px;
+         }
+         .header a:hover {
+         color: #116600;
+         text-decoration: underline;
+         }
+         .header a span {
+         margin-left: 4px;
+         }
+         .header a svg {
+         vertical-align: middle;
+         }
+         .sidepanel-content {
+         font-size: 1rem;
+         }
+         .sidepanel-content h4 {
+         margin-top: 0;
+         margin-bottom: 0;
+         }
+         .sidepanel-content a {
+         text-decoration: none;
+         font-size: 1rem;
+         color: #199900;
+         transition: color 0.3s ease-in;
+         }
+         .sidepanel-content a:hover {
+         color: #116600;
+         text-decoration: underline;
+         }
+         .leaflet-control-custom {
+         border-radius: 4px;
+         width: 26px;
+         height: 26px;
+         border: 1px solid #ccc;
+         border-color: #ccc;
+         background-color: white;
+         background-repeat: no-repeat;
+         background-position: center;
+         cursor: pointer;
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         }
+         .leaflet-control-custom img {
+         width: 20px;
+         height: 20px;
+         }
+         .leaflet-control-custom .leaflet-tooltip {
+         display: none;
+         position: absolute;
+         padding: 4px;
+         background-color: rgba(0, 0, 0, 0.85);
+         color: #e0e0e0;
+         border-radius: 0px;
+         border-width: 0px;
+         white-space: nowrap;
+         font-size: 11.2px;
+         font-family: Arial, sans-serif;
+         pointer-events: none;
+         height: 14px;
+         line-height: 18px;
+         }
+      </style>
+   </head>
+   <body>
+      <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+      <script src="leaflet-knn.min.js"></script>
+      <script src="https://unpkg.com/jquery@3.4.1/dist/jquery.js"></script>
+      <script src="leaflet-sidepanel.min.js"></script>
+      <script src="L.Control.Locate.min.js"></script>
+      <script src="leaflet-control-geocoder.Geocoder.js"></script>
+      <script src="leaflet-panel-layers.js"></script>
+      <script src="leaflet-sidepanel.min.js"></script>
+      <script src="leaflet-routing-machine.js"></script>
+      <script type="text/javascript" src='leaflet.mask.js'></script>
+      <div id="map" class="mapFullScreen"></div>
+      <div id="mySidepanelLeft" class="sidepanel" aria-label="side panel" aria-hidden="false">
+         <div class="sidepanel-inner-wrapper">
+            <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
+               <ul class="sidepanel-tabs">
+                  <li class="sidepanel-tab">
+                     <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                           <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="sidepanel-tab">
+                     <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map-fill" viewBox="0 0 16 16">
+                           <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.598-.49L10.5.99 5.598.01a.5.5 0 0 0-.196 0l-5 1A.5.5 0 0 0 0 1.5v14a.5.5 0 0 0 .598.49l4.902-.98 4.902.98a.502.502 0 0 0 .196 0l5-1A.5.5 0 0 0 16 14.5V.5zM5 14.09V1.11l.5-.1.5.1v12.98l-.402-.08a.498.498 0 0 0-.196 0L5 14.09zm5 .8V1.91l.402.08a.5.5 0 0 0 .196 0L11 1.91v12.98l-.5.1-.5-.1z"/>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="sidepanel-tab">
+                     <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-layers-fill" viewBox="0 0 16 16">
+                           <path d="M7.765 1.559a.5.5 0 0 1 .47 0l7.5 4a.5.5 0 0 1 0 .882l-7.5 4a.5.5 0 0 1-.47 0l-7.5-4a.5.5 0 0 1 0-.882l7.5-4z"/>
+                           <path d="m2.125 8.567-1.86.992a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882l-1.86-.992-5.17 2.756a1.5 1.5 0 0 1-1.41 0l-5.17-2.756z"/>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="sidepanel-tab">
+                     <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
+                           <path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3c0-.269-.035-.53-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814L1 0Zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708ZM3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026L3 11Z"/>
+                        </svg>
+                     </a>
+                  </li>
+               </ul>
+            </nav>
+            <div class="sidepanel-content-wrapper">
+               <div class="sidepanel-content">
+                  <div class="sidepanel-tab-content" data-tab-content="tab-1">
+                     <h4>ADIZMB</h4>
+                     <p>Misiunea Asociației de Dezvoltare Intercomunitară Zona Metropolitană București este aceea de a contribui la toate prioritățile regionale și metropolitane, inclusiv mobilitatea durabilă, educația și incluziunea socială, cercetarea și inovarea.<br>
+                        Principalele obiective ale asociației sunt dezvoltarea și promovarea proiectelor de dezvoltare regională, de interes comun pentru cele două unități teritoriale și administrative, în domeniul social, educațional, infrastructură, mediu, educație, cercetare-dezvoltare, cooperare interregională și transnațională, sprijinirea dezvoltării antreprenoriatului și managementul situațiilor de urgență.
+                     </p>
+                     <br>
+                     <a href="https://www.adizmb.ro/"><img src="https://www.rau.ro/wp-content/uploads/elementor/thumbs/logo-ADIZMB-pgfd0a2kda1g4r6i8h2n16zpv51w1f957fcyy1xvm4.jpg"></a>
+                  </div>
+                  <div class="sidepanel-tab-content" data-tab-content="tab-2">
+                     <h4>Accesibilitatea post-seism</h4>
+                     <p>Multiple zone din oraș sunt expuse riscului de a fi izolate în eventualitatea producerii unui cutremur, inclusiv rutele de evacuare.<br>
+                        Problemele legate de accesibilitate în București după un cutremur pot apărea din diverse motive. Iată câteva posibile aspecte de accesibilitate care pot să survină:<br>
+                        Daune structurale: În urma unui cutremur, clădirile și infrastructura orașului pot avea de suferit, ducând la prăbușirea sau deteriorarea parțială a clădirilor, avarierea podurilor și compromiterea drumurilor. Astfel de daune pot limita accesul dinspre sau către diferite zone din oraș.<br>
+                        Drumuri blocate sau instabile: Un eventual cutremur poate îngreuna sau chiar întrerupe transportul în oraș făcând dificilă deplasarea atât pentru serviciile de urgență, cât și pentru vehicule și pietoni.<br>
+                        Întreruperea transportului public: Cutremurele pot întrerupe funcționarea sistemelor de transport public. Infrastructura deteriorată sau întreruperi de curent sunt doar două dintre aspectele ce pot duce la suspendarea sau limitarea disponibilității =serviciilor de transport public.<br>
+                     </p>
+                  </div>
+                  <div class="sidepanel-tab-content" data-tab-content="tab-3">
+                     <h4>Date și cod sursă</h4>
+                     <p>Leaflet este o librărie JavaScript open-source dedicată realizării de hărți interactive. Oferă o soluție simplă și ușoară pentru crearea de hărți adaptate dispozitivelor mobile, cu diverse funcționalități precum marcaje, popup-uri, straturi de dale și suprapuneri. Codul include multiple pluginuri specifice Leaflet, precum KNN, geocoder, routing-machine<br>
+                        Stratul de fundal CartoDB Light Gray este un set de dale cartografice furnizat de CARTO, o platformă cloud based pentru cartografiere și informații de localizare. CartoDB Light Gray este conceput pentru a oferi un strat de bază minimalistic pentru hărți.<br><br>
+                        Riscul de blocare a rutelor de acces către punctele de evacuare a fost reprezentat sub forma unei hărți de intensitate generate pornind de la vârsta (pondere) și regimul de înălțime (extent) clădirilor încadrate în clasele de risc seismic 1 și 2, a monumentelor istorice și a clădirilor construite anterior anului 1977 (acolo unde aceste informații au fost disponibile).
+                     </p>
+                  </div>
+                  <div class="sidepanel-tab-content" data-tab-content="tab-4">
+                     <h4>Unelte hartă</h4>
+                     <p>Geolocalizare utilizator: permite localizarea utilizatorului, folosind adresa IP a acestuia sau alte metode de colectare a datelor de localizare pentru a identifica poziția curentă.<br>
+                        Căutare adresă: permite căutarea unor adrese specifice, pornind de la un input din partea utilizatorului, percum o adresă stradală sau o combinație de elemente (de exemplu, oraș, stat, cod poștal).<br>
+                        Identificarea celei mai scurte rute: ajută la calcularea celui mai scurt traseu între două locații folosind coordonatele punctului de pornire și cea mai apropiată destinație din stratul "puncte de adunare". Rezultatul este perzentat atât sub forma unei hărți cât și a unei liste de instrucțiuni pas cu pas.<br>
+                        Aceste unelete pot fi utilizate împreună pentru a furniza servicii de identificare a locației curente a utilizatorului, căutare a unor locuri sau adrese din apropiere și calcularea rutei cele mai scurte între locațiile identificate și punctele de adunare/evacuare.
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="sidepanel-toggle-container">
+            <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
+         </div>
+      </div>
+	
+		<script src="data/g.js"></script>
+		
+		<script>
+			var map = L.map('map', {
+					center: [44.4395, 26.1024],
+					zoom: 15,
+					minZoom: 15,
+					zoomDelta: 0.25,
+					zoomSnap: 0,
+					maxBounds: L.latLngBounds([
+						[44.3276, 25.9172],
+						[44.5474, 26.2901]
+					]).pad(0.3)
+				}),
+				carto = new L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+					maxZoom: 17
+				});
+
+			map.addLayer(carto);
+
+			var bounds_group = new L.featureGroup([]);
+
+			function setBounds() {}
+
+			map.createPane('pane_HM_01');
+			map.getPane('pane_HM_01').style.zIndex = 300;
+			var img_HM_01 = 'data/HM_01.png';
+			var img_bounds_HM_01 = [
+				[44.368983743, 25.986162466],
+				[44.522660512, 26.22143891]
+			];
+			var layer_HM_01 = new L.imageOverlay(img_HM_01,
+				img_bounds_HM_01, {
+					pane: 'pane_HM_01',
+					opacity: 0.6
+				});
+			bounds_group.addLayer(layer_HM_01);
+			map.addLayer(layer_HM_01);
+			setBounds();
+			L.ImageOverlay.include({
+				getBounds: function() {
+					return this._bounds;
+				}
+			});
+
+			var customControl = L.Control.extend({
+				options: {
+					position: 'topleft'
+				},
+
+				onAdd: function(map) {
+					var container = L.DomUtil.create('div', 'leaflet-control-custom');
+					var image = L.DomUtil.create('img', 'custom-icon');
+					image.src = 'img/on.png';
+					container.appendChild(image);
+
+					var tooltip = L.DomUtil.create('div', 'leaflet-tooltip');
+					tooltip.innerHTML = 'Calculează rută';
+					container.appendChild(tooltip);
+
+					var gLayer = L.geoJSON(g);
+
+					var isOn = false;
+					var control = null;
+
+					var queryCount = 0;
+					var queryLimit = 2;
+					var queryInterval = 60 * 1000;
+
+					container.onclick = function() {
+						isOn = !isOn;
+
+						if (isOn) {
+							image.src = 'img/off.png';
+							map.getContainer().style.cursor = 'crosshair';
+
+							function checkQueryLimit() {
+								queryCount++;
+								if (queryCount > queryLimit) {
+									console.log('API query limit reached. Please wait for a minute.');
+									alert('Din păcate solicitarea dumneavoastră nu poate fi soluționată. Limita maximă de interogări a fost atinsă. Vă rugăm să așteptați un minut.');
+									return false;
+								}
+
+								setTimeout(function() {
+									queryCount = 0;
+								}, queryInterval);
+								return true;
+							}
+
+							map.on('click', function(e) {
+
+								if (!checkQueryLimit()) {
+									return;reached
+								}
+
+								var clickedLatLng = e.latlng;
+								var closestPoint = leafletKnn(gLayer).nearest(clickedLatLng, 1);
+
+								control = L.Routing.control({
+									addWaypoints: false,
+									waypoints: [
+										L.latLng(clickedLatLng.lat, clickedLatLng.lng),
+										L.latLng(closestPoint[0].lat, closestPoint[0].lon)
+									],
+									routeWhileDragging: false,
+									// router: new L.Routing.osrmv1({
+									//     language: 'ro',
+									//      profile: 'foot'
+									//  }),
+									router: L.Routing.mapbox('pk.eyJ1IjoicGFzY3Vpb251dCIsImEiOiJsUGF2WkY0In0.thTlQzI9VKepgwvCkAg-7g', {
+										profile: 'mapbox/walking',
+										language: 'ro',
+									}),
+
+									geocoder: L.Control.Geocoder.nominatim({}),
+									createMarker: function(i, waypoint, n) {
+										return L.circleMarker(waypoint.latLng, {
+											radius: 12,
+											color: "blue",
+											fillColor: "blue",
+											fillOpacity: 0.5,
+											weight: 2,
+										});
+									}
+								}).addTo(map);
+
+								control.on('routesfound', function(event) {
+									control.options.routeWhileDragging = false;
+									map.off('click');
+									map.getContainer().style.cursor = 'default';
+								});
+							});
+
+						} else {
+							image.src = 'img/on.png';
+							map.getContainer().style.cursor = 'default';
+
+							if (control !== null) {
+								control.remove();
+								control = null;
+							}
+						}
+					};
+
+					container.onmouseover = function(e) {
+						tooltip.style.display = 'block';
+						tooltip.style.left = 25 + 'px';
+						tooltip.style.top = 25 + 'px';
+					};
+					container.onmouseout = function() {
+						tooltip.style.display = 'none';
+					};
+					L.DomEvent.disableClickPropagation(container);
+					return container;
+				}
+			});
+
+			map.addControl(new customControl());
+
+			function style_g() {
+				return {
+					pane: 'g',
+					radius: 4.0,
+					opacity: 1,
+					color: 'rgba(35,35,35,0.0)',
+					dashArray: '',
+					lineCap: 'butt',
+					lineJoin: 'miter',
+					weight: 1,
+					fill: true,
+					fillOpacity: 1,
+					fillColor: 'rgba(1,179,255,1.0)',
+					interactive: true,
+				}
+			}
+			map.createPane('g');
+			map.getPane('g').style.zIndex = 402;
+			map.getPane('g').style['mix-blend-mode'] = 'normal';
+
+			map.createPane('c');
+			map.getPane('c').style.zIndex = 300;
+			map.getPane('c').style['mix-blend-mode'] = 'normal';
+
+			var conf = {
+				base: {
+					title: ' ',
+					layers: [{
+							name: "Hartă",
+							active: true,
+							layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+								attribution: 'OpenStreetMap contributors CartoDB',
+								subdomains: 'abcd',
+								maxZoom: 17
+							})
+						},
+						{
+							name: "Imagine satelitară",
+							layer: L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+								attribution: 'Google Hybrid',
+								subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+								maxZoom: 17
+							})
+						}
+					]
+				},
+				tree: {
+					title: " ",
+					layers: [{
+						active: true,
+						name: "Puncte de adunare",
+						icon: '<i class="fa fa-circle" style="font-size:9px;color:#01b3ff"></i>',
+						layer: L.geoJson(g, {
+							pane: 'g',
+							interactive: true,
+							onEachFeature: function(feature, layer) {
+								var popupContent =
+									'<table>\
+														<tr>\
+															<td colspan="2"><b>' + (feature.properties.Nume) + '</b></td>\
+														</tr>\
+													</table>'
+								layer.bindPopup(popupContent, {
+									maxHeight: 400
+								});
+							},
+							pointToLayer: function(feature, latlng) {
+								var context = {
+									feature: feature,
+									variables: {}
+								};
+								return L.circleMarker(latlng, style_g(feature));
+							},
+						})
+					}, ]
+				}
+			};
+
+			//			var base1 = L.control.panelLayers(conf.base.layers, null, {
+			//				position: 'topright',
+			//				compact: true
+			//			}).addTo(map);
+
+			var over1 = L.control.panelLayers(null, conf.tree.layers, {
+				position: 'topright',
+				compact: true,
+				//collapsed: true,
+				selectorGroup: true,
+				collapsibleGroups: true
+			}).addTo(map);
+
+			L.control.locate({
+				locateOptions: {
+					maxZoom: 17
+				}
+			}).addTo(map);
+
+			var osmGeocoder = new L.Control.Geocoder({
+				collapsed: true,
+				position: 'topleft',
+				text: 'Caută o adresă',
+				title: 'Test'
+			}).addTo(map);
+			document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+				.className += ' fa fa-search';
+			document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+				.title += 'Caută o adresă';
+
+			const sidepanelLeft = L.control.sidepanel('mySidepanelLeft', {
+				panelPosition: 'left',
+				tabsPosition: 'top',
+				pushControls: true,
+				darkMode: false,
+				startTab: 2
+			}).addTo(map);
+
+			map.attributionControl.setPrefix(false);
+			map.attributionControl.addAttribution('ADIZMB, Leaflet');		
+        </script>
+    </body>
+</html>
